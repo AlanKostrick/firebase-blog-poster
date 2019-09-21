@@ -60,10 +60,10 @@ function navPosts() {
         content: postContent
       });
 
-      document.querySelector("#app").innerHTML = PostUpdate();
+      getAppContext().innerHTML = PostUpdate();
       setTimeout(function() {
         postsRef.get().then(posts => {
-          document.querySelector("#app").innerHTML = Posts(posts);
+          getAppContext().innerHTML = Posts(posts);
         });
       }, 3000);
     }
