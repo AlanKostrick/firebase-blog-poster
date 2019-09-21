@@ -28,7 +28,7 @@ function footer() {
 function navHome() {
   const homeButton = document.querySelector(".nav-list__home");
   homeButton.addEventListener("click", function() {
-    document.querySelector("#app").innerHTML = Home();
+    getAppContext().innerHTML = Home();
   });
 }
 
@@ -38,15 +38,14 @@ function navPosts() {
   postsButton.addEventListener("click", function() {
     const postsRef = getDatabaseCollectionContext();
     postsRef.get().then(posts => {
-      document.querySelector("#app").innerHTML = Posts(posts);
+      getAppContext().innerHTML = Posts(posts);
     });
 
     focusOnSingularPost();
   });
 
   //post request
-  const app = document.querySelector("#app");
-  app.addEventListener("click", function() {
+  getAppContext().addEventListener("click", function() {
     const postsRef = getDatabaseCollectionContext();
     if (event.target.classList.contains("add-post__submit")) {
       const postTitle = event.target.parentElement.querySelector(
@@ -71,7 +70,7 @@ function navPosts() {
   });
 
   //delete request
-  app.addEventListener("click", function() {
+  getAppContext().addEventListener("click", function() {
     const postsRef = getDatabaseCollectionContext();
     if (event.target.classList.contains("delete-post__submit")) {
       const postId = event.target.parentElement.querySelector(
@@ -81,24 +80,24 @@ function navPosts() {
 
       postsRef.doc(postId).delete();
       postsRef.get().then(posts => {
-        document.querySelector("#app").innerHTML = Posts(posts);
+        getAppContext().innerHTML = Posts(posts);
       });
     }
   });
 
   //update request
-  app.addEventListener("click", function() {
+  getAppContext().addEventListener("click", function() {
     if (event.target.classList.contains("update-post__submit")) {
       const postId = event.target.parentElement.querySelector(
         ".update-post__id"
       ).value;
-
       const postTitle = event.target.parentElement.querySelector(
         ".update-post__postTitle"
       ).value;
       const postContent = event.target.parentElement.querySelector(
         ".update-post__postBody"
       ).value;
+
       const postsRef = getDatabaseItemContext(postId);
       postsRef.update({
         title: postTitle,
@@ -106,7 +105,7 @@ function navPosts() {
       });
 
       postsRef.get().then(post => {
-        document.querySelector("#app").innerHTML = Post(post);
+        getAppContext().innerHTML = Post(post);
       });
     }
   });
@@ -114,8 +113,7 @@ function navPosts() {
 
 //allows for focus on the single post
 function focusOnSingularPost() {
-  const app = document.querySelector("#app");
-  app.addEventListener("click", function() {
+  getAppContext().addEventListener("click", function() {
     if (event.target.classList.contains("edit-post__submit")) {
       const postId = event.target.parentElement.querySelector(
         ".delete-post__id"
@@ -123,7 +121,7 @@ function focusOnSingularPost() {
       console.log(postId);
       const postsRef = getDatabaseItemContext(postId);
       postsRef.get().then(post => {
-        document.querySelector("#app").innerHTML = Post(post);
+        getAppContext().innerHTML = Post(post);
       });
     }
   });
@@ -139,4 +137,9 @@ function getDatabaseItemContext(id) {
   const db = firebase.firestore();
   const postsRef = db.collection("posts").doc(id);
   return postsRef;
+}
+
+function getAppContext() {
+  const app = document.querySelector("#app");
+  return app;
 }
